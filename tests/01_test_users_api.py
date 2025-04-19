@@ -1,4 +1,8 @@
+import json
+
 import pytest
+from pytest_html import extras
+
 from utils.api_helpers import get_users, get_single_user, create_user, login_and_get_token
 from jsonschema import validate
 from schemas.user_list_schema import user_list_schema
@@ -17,12 +21,14 @@ def test_get_users_success():
     response = get_users()
     validate(instance=response.json(), schema=user_list_schema)
 
+
 # ✅ Data-Driven Test for multiple user IDs
 @pytest.mark.parametrize("user_id", [1, 2, 3, 10])
 def test_user_exists(user_id):
     response = get_single_user(user_id)
     assert response.status_code == 200
     assert "data" in response.json()
+
 
 # 🔁 Retry Test
 @pytest.mark.flaky(reruns=2, reruns_delay=1)
